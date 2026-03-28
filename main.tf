@@ -7,19 +7,18 @@ terraform {
   }
 }
 
-variable "client_id" {}
-variable "client_secret" {}
-variable "tenant_id" {}
-variable "subscription_id" {}
+data "vault_azure_access_credentials" "creds" {
+  role = "tfe-role"
+}
 
 provider "azurerm" {
   features {}
   use_cli = false
 
-  client_id       = var.client_id
-  client_secret   = var.client_secret
-  tenant_id       = var.tenant_id
-  subscription_id = var.subscription_id
+  client_id       = data.vault_azure_access_credentials.creds.client_id
+  client_secret   = data.vault_azure_access_credentials.creds.client_secret
+  tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
+  subscription_id = data.vault_azure_access_credentials.creds.subscription_id
 }
 resource "azurerm_resource_group" "network" {
   name = "rg_network_poc"
