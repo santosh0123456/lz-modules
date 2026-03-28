@@ -6,7 +6,7 @@ terraform {
     }
   }
 }
-variable "vault_addr" {}
+provider "vault" {}
 
 data "vault_azure_access_credentials" "creds" {
   backend = "azure"
