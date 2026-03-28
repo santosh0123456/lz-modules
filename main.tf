@@ -6,7 +6,6 @@ terraform {
     }
   }
 }
-
 data "vault_azure_access_credentials" "creds" {
   role = "tfe-role"
 }
