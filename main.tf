@@ -6,10 +6,7 @@ terraform {
     }
   }
 }
-data "vault_azure_access_credentials" "creds" {
-  backend = "azure"
-  role    = "tfe-role"
-}
+
 provider "vault" {
   address = var.vault_addr
 
@@ -21,7 +18,10 @@ provider "vault" {
     }
   }
 }
-
+data "vault_azure_access_credentials" "creds" {
+  backend = "azure"
+  role    = "tfe-role"
+}
 provider "azurerm" {
   features {}
   use_cli = false
