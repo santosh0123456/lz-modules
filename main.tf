@@ -6,10 +6,10 @@ terraform {
     }
   }
 }
+variable "vault_addr" {}
 
 provider "vault" {
-  variable "vault_addr" {}
-
+  address = var.vault_addr
   auth_login {
     path = "auth/kubernetes/login"
 
