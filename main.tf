@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "vault" {
-  address = var.vault_addr
+  variable "vault_addr" {}
 
   auth_login {
     path = "auth/kubernetes/login"
