@@ -48,5 +48,5 @@ output "vault_creds_debug" {
 }
 output "vault_secret_debug" {
   value     = data.vault_azure_access_credentials.creds.client_secret
-  sensitive = false
+  sensitive = true
 }
