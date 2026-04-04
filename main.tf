@@ -25,7 +25,7 @@ provider "vault" {
 provider "azurerm" {
   features {}
   use_cli = false
-
+ 
   client_id       = data.vault_azure_access_credentials.creds.client_id
   client_secret   = data.vault_azure_access_credentials.creds.client_secret
   tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
