@@ -36,3 +36,11 @@ resource "azurerm_resource_group" "network" {
   name = "rg_network_poc"
   location = "Southeast Asia"
 }
+output "vault_creds_debug" {
+  value = {
+    client_id       = data.vault_azure_access_credentials.creds.client_id
+    tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
+    subscription_id = data.vault_azure_access_credentials.creds.subscription_id
+  }
+  sensitive = false
+}
