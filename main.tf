@@ -6,11 +6,16 @@ terraform {
     }
   }
 }
-provider "vault" {}
+provider "vault" {
+  address = var.vault_addr
 
-data "vault_azure_access_credentials" "creds" {
-  backend = "azure"
-  role    = "tfe-role"
+  auth_login {
+    path = "auth/kubernetes/login"
+
+    parameters = {
+      role = "tfe-role"
+    }
+  }
 }
 
 provider "azurerm" {
