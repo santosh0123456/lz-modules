@@ -15,7 +15,7 @@ provider "vault" {
 
     parameters = {
       role = "tfe-role"
-      jwt  = chomp(file("/var/run/secrets/kubernetes.io/serviceaccount/token"))
+      #jwt  = chomp(file("/var/run/secrets/kubernetes.io/serviceaccount/token"))
     }
   }
 }
