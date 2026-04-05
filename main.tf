@@ -15,7 +15,7 @@ provider "vault" {
 
     parameters = {
       role = "tfe-role"
-      jwt  = chomp(file("var.kube_token_file"))
+      jwt  = file(var.kube_token_file)
     }
   }
 }
