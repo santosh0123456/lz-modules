@@ -28,7 +28,7 @@ provider "azurerm" {
   use_cli = false
  
   client_id       = data.vault_azure_access_credentials.creds.client_id
-  client_secret   = data.vault_azure_access_credentials.creds.client_secret
+  client_secret   = chomp(data.vault_azure_access_credentials.creds.client_secret)
   tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
   subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
   #tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
