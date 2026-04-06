@@ -1,9 +1,8 @@
 terraform {
   required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 3.0"
-    }
+    vault   = { source = "hashicorp/vault",    version = "~> 3.0" }
+    azurerm = { source = "hashicorp/azurerm",  version = "~> 3.100" }
+    time    = { source = "hashicorp/time",     version = "~> 0.9" }
   }
 }
 variable "vault_addr" {}
@@ -23,14 +22,24 @@ provider "vault" {
 data "vault_azure_access_credentials" "creds" {
   backend = "azure"
   role    = "tfe-role"
-  validate_creds              = true
+  validate_creds              = false
   num_sequential_successes    = 1
   num_seconds_between_tests   = 1
   max_cred_validation_seconds = 300
 }
+resource "time_sleep" "wait_for_aad_propagation" {
+  create_duration = "30s"
+
+  triggers = {
+    # re-trigger the wait every time client_secret changes
+    client_secret = data.vault_azure_access_credentials.creds.client_secret
+  }
+}
+
 provider "azurerm" {
   features {}
   use_cli = false
+  use_msi         = false
  
   client_id       = data.vault_azure_access_credentials.creds.client_id
   client_secret   = chomp(data.vault_azure_access_credentials.creds.client_secret)
