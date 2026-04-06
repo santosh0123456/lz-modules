@@ -1,11 +1,11 @@
 terraform {
   required_providers {
-    vault   = { source = "hashicorp/vault",    version = "~> 3.0" }
+    #vault   = { source = "hashicorp/vault",    version = "~> 3.0" }
     azurerm = { source = "hashicorp/azurerm",  version = "~> 3.100" }
-    time    = { source = "hashicorp/time",     version = "~> 0.9" }
+    #time    = { source = "hashicorp/time",     version = "~> 0.9" }
   }
 }
-variable "vault_addr" {}
+#variable "vault_addr" {}
 variable "tfc_vault_backed_azure_dynamic_credentials" {
   type = object({
     default = object({
@@ -18,19 +18,19 @@ variable "tfc_vault_backed_azure_dynamic_credentials" {
     }))
   })
 }
-variable "kube_token_file"{}
+#variable "kube_token_file"{}
 
-provider "vault" {
-  address = var.vault_addr
-  auth_login {
-    path = "auth/kubernetes/login"
-
-    parameters = {
-      role = "tfe-role"
-      jwt  = file(var.kube_token_file)
-    }
-  }
-}
+#provider "vault" {
+#  address = var.vault_addr
+#  auth_login {
+#    path = "auth/kubernetes/login"
+#
+#    parameters = {
+#      role = "tfe-role"
+#      jwt  = file(var.kube_token_file)
+#    }
+#  }
+#}
 #data "vault_azure_access_credentials" "creds" {
 #  backend = "azure"
 #  role    = "tfe-role"
@@ -68,16 +68,4 @@ provider "azurerm" {
 resource "azurerm_resource_group" "network" {
   name = "rg_network_poc"
   location = "Southeast Asia"
-}
-output "vault_creds_debug" {
-  value = {
-    client_id       = data.vault_azure_access_credentials.creds.client_id
-    tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
-    subscription_id = data.vault_azure_access_credentials.creds.subscription_id
-  }
-  sensitive = false
-}
-output "vault_secret_debug" {
-  value     = data.vault_azure_access_credentials.creds.client_secret
-  sensitive = false
 }
