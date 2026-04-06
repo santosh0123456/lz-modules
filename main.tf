@@ -7,6 +7,7 @@ terraform {
   }
 }
 variable "vault_addr" {}
+
 variable "kube_token_file"{}
 
 provider "vault" {
