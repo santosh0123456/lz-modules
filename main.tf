@@ -6,6 +6,7 @@ terraform {
   }
 }
 #variable "vault_addr" {}
+
 variable "tfc_vault_backed_azure_dynamic_credentials" {
   type = object({
     default = object({
