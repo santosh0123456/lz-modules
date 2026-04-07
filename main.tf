@@ -13,8 +13,8 @@ variable "vault_addr" {
 variable "tfc_vault_backed_azure_dynamic_credentials" {
   type = object({
     default = object({
-      client_id_file_path     = "/tmp/client_id"
-      client_secret_file_path = "/tmp/client_secret"
+      client_id_file_path     = string
+      client_secret_file_path = string
     })
   })
 }
