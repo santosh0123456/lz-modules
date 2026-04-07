@@ -32,10 +32,10 @@ provider "vault" {
     }
   }
 }
-data "vault_azure_access_credentials" "creds" {
-  backend = "azure"
-  role    = "tfe-role"
-  validate_creds              = false
+#data "vault_azure_access_credentials" "creds" {
+#  backend = "azure"
+#  role    = "tfe-role"
+#  validate_creds              = false
 #  num_sequential_successes    = 1
 #  num_seconds_between_tests   = 1
 #  max_cred_validation_seconds = 300
@@ -59,8 +59,10 @@ provider "azurerm" {
  # subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
  # tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
 
-  client_id       = data.vault_azure_access_credentials.creds.client_id
-  client_secret   = data.vault_azure_access_credentials.creds.client_secret
+  #client_id       = data.vault_azure_access_credentials.creds.client_id
+  #client_secret   = data.vault_azure_access_credentials.creds.client_secret
+  client_id       = "20693731-319a-4bf1-a8c4-3bf9d33af319"
+  client_secret   = "ayk8Q~YiSyLOz9N~vq1sOzPia5-nJk2xbHqOGcka"
   tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
   subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
  # #tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
