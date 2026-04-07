@@ -15,6 +15,7 @@ variable "tfc_vault_backed_azure_dynamic_credentials" {
     default = object({
       client_id_file_path     = string
       client_secret_file_path = string
+    })
   })
 }
 variable "kube_token_file" {
