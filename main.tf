@@ -10,18 +10,13 @@ variable "vault_addr" {
   default = "http://vault.tfeplatform.svc.cluster.local:8200"
 }
 
-#variable "tfc_vault_backed_azure_dynamic_credentials" {
- # type = object({
-  #  default = object({
-   #   client_id_file_path     = string
-    #  client_secret_file_path = string
-    #})
-    #aliases = map(object({
-    #  client_id_file_path     = string
-    #  client_secret_file_path = string
-    #}))
-  #})
-#}
+variable "tfc_vault_backed_azure_dynamic_credentials" {
+  type = object({
+    default = object({
+      client_id_file_path     = string
+      client_secret_file_path = string
+  })
+}
 variable "kube_token_file" {
   default  =  "/var/run/secrets/kubernetes.io/serviceaccount/token"
 }
@@ -59,15 +54,15 @@ provider "azurerm" {
   use_cli = false
   use_msi         = false
 
- # client_id_file_path     = var.tfc_vault_backed_azure_dynamic_credentials.default.client_id_file_path
- # client_secret_file_path = var.tfc_vault_backed_azure_dynamic_credentials.default.client_secret_file_path
+  client_id_file_path     = var.tfc_vault_backed_azure_dynamic_credentials.default.client_id_file_path
+  client_secret_file_path = var.tfc_vault_backed_azure_dynamic_credentials.default.client_secret_file_path
  # subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
  # tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
 
-  client_id       = data.vault_azure_access_credentials.creds.client_id
+  #client_id       = data.vault_azure_access_credentials.creds.client_id
   #client_secret   = data.vault_azure_access_credentials.creds.client_secret
   #client_id       = "20693731-319a-4bf1-a8c4-3bf9d33af319"
-  client_secret   = "ayk8Q~YiSyLOz9N~vq1sOzPia5-nJk2xbHqOGcka"
+  #client_secret   = "ayk8Q~YiSyLOz9N~vq1sOzPia5-nJk2xbHqOGcka"
   tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
   subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
  # #tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
