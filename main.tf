@@ -5,7 +5,9 @@ terraform {
     #time    = { source = "hashicorp/time",     version = "~> 0.9" }
   }
 }
-variable "vault_addr" {}
+variable "vault_addr" {
+  default = "http://vault.tfeplatform.svc.cluster.local:8200"
+}
 
 #variable "tfc_vault_backed_azure_dynamic_credentials" {
  # type = object({
@@ -19,7 +21,9 @@ variable "vault_addr" {}
     #}))
   #})
 #}
-variable "kube_token_file"{}
+variable "kube_token_file" {
+  default  =  "/var/run/secrets/kubernetes.io/serviceaccount/token"
+}
 
 provider "vault" {
   address = var.vault_addr
