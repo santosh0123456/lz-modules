@@ -5,6 +5,7 @@ terraform {
     #time    = { source = "hashicorp/time",     version = "~> 0.9" }
   }
 }
+
 variable "vault_addr" {
   default = "http://vault.tfeplatform.svc.cluster.local:8200"
 }
