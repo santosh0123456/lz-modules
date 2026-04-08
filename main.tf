@@ -36,10 +36,10 @@ provider "vault" {
 data "vault_azure_access_credentials" "creds" {
   backend = "azure"
   role    = "tfe-role"
-  validate_creds              = false
-#  num_sequential_successes    = 1
-#  num_seconds_between_tests   = 1
-#  max_cred_validation_seconds = 300
+  validate_creds              = true
+  num_sequential_successes    = 3
+  num_seconds_between_tests   = 1
+  max_cred_validation_seconds = 300
 }
 resource "time_sleep" "wait_for_azure_propagation" {
   depends_on = [data.vault_azure_access_credentials.creds]  
