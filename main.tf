@@ -45,16 +45,16 @@ resource "time_sleep" "wait_for_azure_propagation" {
   depends_on = [data.vault_azure_access_credentials.creds]  
   create_duration = "30s"
 
-  triggers = {
+  #triggers = {
   #  # re-trigger the wait every time client_secret changes
-    client_secret = [data.vault_azure_access_credentials.creds.client_secret]
-  }
+  #  client_secret = [data.vault_azure_access_credentials.creds.client_secret]
+  #}
 }
 
-locals {
+#locals {
 #  # This local won't resolve until the 30s timer is up
-  client_secret = time_sleep.wait_for_azure_propagation.id != "" ? data.vault_azure_access_credentials.creds.client_secret : ""
-}
+#  client_secret = time_sleep.wait_for_azure_propagation.id != "" ? data.vault_azure_access_credentials.creds.client_secret : ""
+#}
 
 provider "azurerm" {
   features {}
