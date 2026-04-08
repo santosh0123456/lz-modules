@@ -76,9 +76,9 @@ provider "azurerm" {
   client_certificate_password = time_sleep.wait_for_azure_propagation.id != "" ? null : null
 
   #client_id       = data.vault_azure_access_credentials.creds.client_id
-  #client_secret   = data.vault_azure_access_credentials.creds.client_secret
+  client_secret   = data.vault_azure_access_credentials.creds.client_secret
   client_id        = data.azurerm_subscription.current.client_id
-  client_secret   = data.azurerm_subscription.current.clinet_id != "" ? data.vault_azure_access_credentials.creds.data["client_secret"] : ""
+  #client_secret   = data.azurerm_subscription.current.clinet_id != "" ? data.vault_azure_access_credentials.creds.data["client_secret"] : ""
   #client_secret   = local.client_secret
   #client_secret = nonsensitive(data.vault_azure_access_credentials.creds.client_secret)
   #client_id       = "20693731-319a-4bf1-a8c4-3bf9d33af319"
