@@ -52,9 +52,7 @@ resource "time_sleep" "wait_for_azure_propagation" {
   #  client_secret = [data.vault_azure_access_credentials.creds.client_secret]
   #}
 }
-data "azurerm_subscription" "current" {
-  depends_on = [time_sleep.wait_for_azure_propagation]
-}
+
 locals {
   # This local won't resolve until the 30s timer is up
   client_secret = time_sleep.wait_for_azure_propagation.id != "" ? data.vault_azure_access_credentials.creds.client_secret : ""
@@ -75,9 +73,9 @@ provider "azurerm" {
   storage_use_azuread = true
   client_certificate_password = time_sleep.wait_for_azure_propagation.id != "" ? null : null
 
-  #client_id       = data.vault_azure_access_credentials.creds.client_id
+  client_id       = data.vault_azure_access_credentials.creds.client_id
   client_secret   = data.vault_azure_access_credentials.creds.client_secret
-  client_id        = data.azurerm_subscription.current.client_id
+  #client_id        = data.azurerm_subscription.current.client_id
   #client_secret   = data.azurerm_subscription.current.clinet_id != "" ? data.vault_azure_access_credentials.creds.data["client_secret"] : ""
   #client_secret   = local.client_secret
   #client_secret = nonsensitive(data.vault_azure_access_credentials.creds.client_secret)
