@@ -52,7 +52,9 @@ resource "time_sleep" "wait_for_azure_propagation" {
   #  client_secret = [data.vault_azure_access_credentials.creds.client_secret]
   #}
 }
-
+data "azurerm_subscription" "current" {
+  depends_on = [time_sleep.wait_for_azure_propagation]
+}
 locals {
   # This local won't resolve until the 30s timer is up
   client_secret = time_sleep.wait_for_azure_propagation.id != "" ? data.vault_azure_access_credentials.creds.client_secret : ""
@@ -73,14 +75,18 @@ provider "azurerm" {
   storage_use_azuread = true
   client_certificate_password = time_sleep.wait_for_azure_propagation.id != "" ? null : null
 
-  client_id       = data.vault_azure_access_credentials.creds.client_id
-  client_secret   = data.vault_azure_access_credentials.creds.client_secret
+  #client_id       = data.vault_azure_access_credentials.creds.client_id
+  #client_secret   = data.vault_azure_access_credentials.creds.client_secret
+  client_id        = data.azurerm_subscription.current.client_id
+  client_secret   = data.azurerm_subscription.current.clinet_id != "" ? data.vault_azure_access_credentials.creds.data["client_secret"] : ""
   #client_secret   = local.client_secret
   #client_secret = nonsensitive(data.vault_azure_access_credentials.creds.client_secret)
   #client_id       = "20693731-319a-4bf1-a8c4-3bf9d33af319"
   #client_secret   = "ayk8Q~YiSyLOz9N~vq1sOzPia5-nJk2xbHqOGcka"
   tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
+  #subscription_id = data.azurerm_subscription.current.subscription_id
   subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
+
  # #tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
  # #subscription_id = data.vault_azure_access_credentials.creds.subscription_id
 }
