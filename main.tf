@@ -40,6 +40,8 @@ data "vault_azure_access_credentials" "creds" {
   num_sequential_successes    = 3
   num_seconds_between_tests   = 1
   max_cred_validation_seconds = 300
+  tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
+  subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
 }
 resource "time_sleep" "wait_for_azure_propagation" {
   depends_on = [data.vault_azure_access_credentials.creds]  
