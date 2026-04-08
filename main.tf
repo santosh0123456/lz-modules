@@ -2,7 +2,7 @@ terraform {
   required_providers {
     vault   = { source = "hashicorp/vault",    version = "~> 3.0" }
     azurerm = { source = "hashicorp/azurerm",  version = "~> 3.100" }
-    #time    = { source = "hashicorp/time",     version = "~> 0.9" }
+    time    = { source = "hashicorp/time",     version = "~> 0.9" }
   }
 }
 
@@ -51,10 +51,10 @@ resource "time_sleep" "wait_for_azure_propagation" {
   #}
 }
 
-#locals {
-#  # This local won't resolve until the 30s timer is up
-#  client_secret = time_sleep.wait_for_azure_propagation.id != "" ? data.vault_azure_access_credentials.creds.client_secret : ""
-#}
+locals {
+  # This local won't resolve until the 30s timer is up
+  client_secret = time_sleep.wait_for_azure_propagation.id != "" ? data.vault_azure_access_credentials.creds.client_secret : ""
+}
 
 provider "azurerm" {
   features {}
