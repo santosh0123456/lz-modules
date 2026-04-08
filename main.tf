@@ -81,8 +81,6 @@ provider "azurerm" {
   subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
  # #tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
  # #subscription_id = data.vault_azure_access_credentials.creds.subscription_id
-  
-
 }
 resource "azurerm_resource_group" "network" {
   provider = azurerm.authenticated
