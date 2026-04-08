@@ -2,7 +2,7 @@ terraform {
   required_providers {
     vault   = { source = "hashicorp/vault",    version = "~> 3.0" }
     azurerm = { source = "hashicorp/azurerm",  version = "~> 3.100" }
-    #time    = { source = "hashicorp/time",     version = "~> 0.9" }
+    time    = { source = "hashicorp/time",     version = "~> 0.9" }
   }
 }
 
