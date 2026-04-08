@@ -58,6 +58,7 @@ locals {
 
 provider "azurerm" {
   features {}
+  alias = "authenticated"
   use_cli = false
   use_msi         = false
 
@@ -65,6 +66,10 @@ provider "azurerm" {
  # client_secret_file_path = var.tfc_vault_backed_azure_dynamic_credentials.default.client_secret_file_path
  # subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
  # tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
+
+  skip_provider_registration = true
+  storage_use_azuread = true
+  client_certificate_password = time_sleep.wait_for_azure_propagation.id != "" ? null : null
 
   client_id       = data.vault_azure_access_credentials.creds.client_id
   client_secret   = data.vault_azure_access_credentials.creds.client_secret
@@ -76,11 +81,11 @@ provider "azurerm" {
   subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
  # #tenant_id       = data.vault_azure_access_credentials.creds.tenant_id
  # #subscription_id = data.vault_azure_access_credentials.creds.subscription_id
-  client_certificate_password = time_sleep.wait_for_azure_propagation.id != "" ? null : null
-  skip_provider_registration = true
-  storage_use_azuread = true
+  
+
 }
 resource "azurerm_resource_group" "network" {
+  provider = azurerm.authenticated
   name = "rg_network_poc"
   location = "Southeast Asia"
 }
