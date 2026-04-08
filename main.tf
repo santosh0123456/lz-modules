@@ -41,7 +41,7 @@ data "vault_azure_access_credentials" "creds" {
 #  num_seconds_between_tests   = 1
 #  max_cred_validation_seconds = 300
 }
-resource "time_sleep" "wait_for_aad_propagation" {
+resource "time_sleep" "wait_for_azure_propagation" {
   create_duration = "30s"
 
   triggers = {
