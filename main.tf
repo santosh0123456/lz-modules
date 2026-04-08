@@ -78,6 +78,7 @@ provider "azurerm" {
  # #subscription_id = data.vault_azure_access_credentials.creds.subscription_id
   client_certificate_password = time_sleep.wait_for_azure_propagation.id != "" ? null : null
   skip_provider_registration = true
+  storage_use_azuread = true
 }
 resource "azurerm_resource_group" "network" {
   name = "rg_network_poc"
