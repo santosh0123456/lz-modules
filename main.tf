@@ -61,7 +61,8 @@ provider "azurerm" {
  # tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
 
   client_id       = data.vault_azure_access_credentials.creds.client_id
-  client_secret   = data.vault_azure_access_credentials.creds.client_secret
+  #client_secret   = data.vault_azure_access_credentials.creds.client_secret
+  client_secret = nonsensitive(data.vault_azure_access_credentials.creds.client_secret)
   #client_id       = "20693731-319a-4bf1-a8c4-3bf9d33af319"
   #client_secret   = "ayk8Q~YiSyLOz9N~vq1sOzPia5-nJk2xbHqOGcka"
   tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
