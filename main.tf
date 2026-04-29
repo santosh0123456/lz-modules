@@ -1,3 +1,11 @@
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "maybankpoc"
+    storage_account_name = "crestsolution"
+    container_name       = "tfestorage"
+    key                  = "nginxstate/nginx.tfstate"
+  }
+}
 provider "azurerm" {
   features {}
 }
