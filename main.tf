@@ -1,6 +1,6 @@
 terraform {
   backend "azurerm" {
-    resource_group_name  = "maybankpoc"
+    resource_group_name  = "crestsolution"
     storage_account_name = "crestsolution"
     container_name       = "tfestorage"
     key                  = "nginxstate/nginx.tfstate"
