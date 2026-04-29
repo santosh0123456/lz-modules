@@ -1,0 +1,92 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: infra-pipeline
+spec:
+  template:
+    spec:
+      serviceAccountName: terraform-sa
+      restartPolicy: Never
+
+      containers:
+      - name: pipeline
+        image: alpine:latest
+
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            set -e
+
+            echo "📦 Installing tools..."
+            apk add --no-cache curl jq git bash python3 py3-pip
+            pip install azure-cli
+
+            echo "🔐 Fetching Azure creds from Vault..."
+            CREDS=$(vault read -format=json azure/creds/terraform-role)
+
+            export ARM_CLIENT_ID=$(echo "$CREDS" | jq -r .data.client_id | tr -d '\r\n')
+            export ARM_CLIENT_SECRET=$(echo "$CREDS" | jq -r .data.client_secret | tr -d '\r\n')
+            export ARM_TENANT_ID=$(echo "$CREDS" | jq -r .data.tenant_id | tr -d '\r\n')
+            export ARM_SUBSCRIPTION_ID=$(echo "$CREDS" | jq -r .data.subscription_id | tr -d '\r\n')
+
+            echo "🔑 Azure login..."
+            az login --service-principal \
+              -u $ARM_CLIENT_ID \
+              -p $ARM_CLIENT_SECRET \
+              --tenant $ARM_TENANT_ID
+
+            echo "📥 Cloning repos..."
+            git clone https://github.com/santosh0123456/packer-images.git
+            git clone https://github.com/santosh0123456/terraform-infra.git
+            git clone https://github.com/santosh0123456/image-registry.git
+
+            ###################################
+            # 🚀 STEP 1 — PACKER BUILD
+            ###################################
+            cd packer-images
+
+            VERSION=$(date +%Y%m%d%H%M%S)
+            echo "📦 Building image version: $VERSION"
+
+            packer init .
+            packer build \
+              -var "image_version=$VERSION" \
+              nginx.pkr.hcl
+
+            ###################################
+            # 📝 STEP 2 — UPDATE IMAGE REGISTRY
+            ###################################
+            cd ../image-registry
+
+            jq --arg ver "$VERSION" \
+              '.["rhel9-nginx"]=$ver' images.json > tmp.json
+
+            mv tmp.json images.json
+
+            git config --global user.email "pipeline@company.com"
+            git config --global user.name "pipeline"
+
+            git add images.json
+            git commit -m "Update nginx image to $VERSION"
+            git push
+
+            ###################################
+            # 🏗 STEP 3 — TERRAFORM APPLY
+            ###################################
+            cd ../terraform-infra
+
+            terraform init
+            terraform plan
+            terraform apply -auto-approve
+
+            echo "✅ Pipeline completed successfully"
+
+        env:
+        - name: VAULT_ADDR
+          value: "http://vault:8200"
+
+        - name: VAULT_AUTH_METHOD
+          value: "kubernetes"
+
+        - name: VAULT_ROLE
+          value: "terraform-role"
