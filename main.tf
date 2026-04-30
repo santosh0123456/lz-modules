@@ -6,6 +6,8 @@ terraform {
     key                  = "nginxstate/nginx.tfstate"
   }
 }
+variable "github_token" {}
+
 provider "azurerm" {
   features {}
 #
@@ -19,6 +21,11 @@ data "azurerm_resource_group" "rg" {
 }
 data "http" "image_registry" {
   url = "https://raw.githubusercontent.com/santosh0123456/image-registry/main/images.json"
+
+  request_headers = {
+    Authorization = "Bearer ${var.github_token}"
+    Accept        = "application/vnd.github.v3.raw"
+  }
 }
 locals {
   images = jsondecode(data.http.image_registry.response_body)
