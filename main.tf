@@ -3,7 +3,7 @@ terraform {
     resource_group_name  = "crestsolution"
     storage_account_name = "crestsolution"
     container_name       = "tfestorage"
-    key                  = "nginxstate/nginx.tfstate"
+    key                  = "rhel9/rhel9.tfstate"
   }
 }
 variable "github_token" {}
@@ -86,17 +86,34 @@ resource "azurerm_network_security_group" "nsg" {
 # ----------------------------
 # Public IP
 # ----------------------------
-resource "azurerm_public_ip" "pip" {
-  name                = "pip-nginx"
+
+resource "azurerm_public_ip" "nginx" {
+  name                = "nginx-ip"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
+  sku                 = "Standard"
 }
 
+resource "azurerm_public_ip" "tomcat" {
+  name                = "tomcat-ip"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = var.resource_group_name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+resource "azurerm_public_ip" "mariadb" {
+  name                = "mariadb-ip"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = var.resource_group_name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
 # ----------------------------
 # Network Interface
 # ----------------------------
-resource "azurerm_network_interface" "nic" {
+resource "azurerm_network_interface" "nginx" {
   name                = "nic-nginx"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = var.resource_group_name
@@ -105,22 +122,48 @@ resource "azurerm_network_interface" "nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.pip.id
+    public_ip_address_id          = azurerm_public_ip.nginx.id
   }
 }
 
+resource "azurerm_network_interface" "tomcat" {
+  name                = "nic-tomcat"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = var.resource_group_name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.tomcat.id
+  }
+}
+
+resource "azurerm_network_interface" "mariadb" {
+  name                = "nic-mariadb"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = var.resource_group_name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.subnet.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.mariadb.id
+  }
+}
 # ----------------------------
 # Attach NSG to NIC
 # ----------------------------
 resource "azurerm_network_interface_security_group_association" "nsg_assoc" {
-  network_interface_id      = azurerm_network_interface.nic.id
+  subnet_id                 = azurerm_subnet.subnet.id
+  #network_interface_id      = azurerm_network_interface.nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 # ----------------------------
-# Virtual Machine (using Packer image)
+# Virtual Machine Nginx (using Packer image)
 # ----------------------------
-resource "azurerm_linux_virtual_machine" "vm" {
+resource "azurerm_linux_virtual_machine" "vm-nginx" {
   name                = "vm-nginx"
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = var.resource_group_name
@@ -129,7 +172,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   admin_username = var.admin_username
 
   network_interface_ids = [
-    azurerm_network_interface.nic.id
+    azurerm_network_interface.nginx.id
   ]
 
   admin_ssh_key {
@@ -138,10 +181,74 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
 #  source_image_id = var.image_id
- source_image_id = "/subscriptions/71dc99cb-2548-4b6b-bf46-cd57e81fccaa/resourceGroups/maybankpoc/providers/Microsoft.Compute/galleries/packerimages/images/rhel9-nginx/versions/${local.images["rhel9-nginx"]}"
+ source_image_id = "/subscriptions/71dc99cb-2548-4b6b-bf46-cd57e81fccaa/resourceGroups/maybankpoc/providers/Microsoft.Compute/galleries/packerimages/images/rhel9-base/versions/${local.images["rhel9-base"]}"
 
   os_disk {
     name                 = "osdisk-nginx"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+    disk_size_gb         = 64
+  }
+
+  disable_password_authentication = true
+}
+# ----------------------------
+# Virtual Machine Tomcat (using Packer image)
+# ----------------------------
+resource "azurerm_linux_virtual_machine" "vm-tomcat" {
+  name                = "vm-tomcat"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = var.resource_group_name
+  size                = "Standard_B2s"
+
+  admin_username = var.admin_username
+
+  network_interface_ids = [
+    azurerm_network_interface.tomcat.id
+  ]
+
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = var.ssh_public_key
+  }
+
+#  source_image_id = var.image_id
+ source_image_id = "/subscriptions/71dc99cb-2548-4b6b-bf46-cd57e81fccaa/resourceGroups/maybankpoc/providers/Microsoft.Compute/galleries/packerimages/images/rhel9-base/versions/${local.images["rhel9-base"]}"
+
+  os_disk {
+    name                 = "osdisk-tomcat"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+    disk_size_gb         = 64
+  }
+
+  disable_password_authentication = true
+}
+# ----------------------------
+# Virtual Machine MariaDB (using Packer image)
+# ----------------------------
+resource "azurerm_linux_virtual_machine" "vm-mariadb" {
+  name                = "vm-mariadb"
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = var.resource_group_name
+  size                = "Standard_B2s"
+
+  admin_username = var.admin_username
+
+  network_interface_ids = [
+    azurerm_network_interface.mariadb.id
+  ]
+
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = var.ssh_public_key
+  }
+
+#  source_image_id = var.image_id
+ source_image_id = "/subscriptions/71dc99cb-2548-4b6b-bf46-cd57e81fccaa/resourceGroups/maybankpoc/providers/Microsoft.Compute/galleries/packerimages/images/rhel9-base/versions/${local.images["rhel9-base"]}"
+
+  os_disk {
+    name                 = "osdisk-mariadb"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
     disk_size_gb         = 64
