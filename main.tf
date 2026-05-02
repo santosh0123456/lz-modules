@@ -6,6 +6,9 @@ terraform {
     key                  = "rhel9/rhel9.tfstate"
     
     use_oidc = true
+    client_id       = "19baf6b7-69ab-443e-ad52-77ee501d2ac0"
+    tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
+    subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
   }
 }
 variable "github_token" {}
@@ -13,6 +16,9 @@ variable "github_token" {}
 provider "azurerm" {
   features {}
   use_oidc = true
+  client_id       = "19baf6b7-69ab-443e-ad52-77ee501d2ac0"
+  tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
+  subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
 #
 }
 
