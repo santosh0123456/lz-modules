@@ -10,6 +10,7 @@ variable "github_token" {}
 
 provider "azurerm" {
   features {}
+  use_oidc = true
 #
 }
 
