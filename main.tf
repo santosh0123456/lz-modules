@@ -5,19 +5,17 @@ terraform {
       version = "~> 3.7"   # must be 3.7+ for OIDC
     }
   }
-}
-terraform {
+#}
+#terraform {
   backend "azurerm" {
     resource_group_name  = "crestsolution"
     storage_account_name = "crestsolution"
     container_name       = "tfestorage"
     key                  = "rhel9/rhel9.tfstate"
-    access_key           = "QxfH2CS+RT/SF6wAjAHYIprdWXtuIM1BErWrs74V3gNp9mxfvv64/tXumr6WvQNXLM3XkgWK8IKRlJyYHdfFLg=="
+    #access_key           = "QxfH2CS+RT/SF6wAjAHYIprdWXtuIM1BErWrs74V3gNp9mxfvv64/tXumr6WvQNXLM3XkgWK8IKRlJyYHdfFLg=="
     
-    #use_oidc = true
-    #client_id       = "19baf6b7-69ab-443e-ad52-77ee501d2ac0"
-    #tenant_id       = "c267b313-f395-45c7-82f9-325e4d530d90"
-    #subscription_id = "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
+    use_oidc = true
+    use_cli = false
   }
 }
 variable "github_token" {}
