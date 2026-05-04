@@ -12,7 +12,7 @@ terraform {
     storage_account_name = "crestsolution"
     container_name       = "tfestorage"
     key                  = "rhel9/rhel9.tfstate"
-       
+    
     use_oidc = true
     use_cli = false
   }
