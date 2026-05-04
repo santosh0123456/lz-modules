@@ -21,7 +21,7 @@ variable "github_token" {}
 variable "client_id" {}
 variable "tenant_id" {}
 variable "subscription_id" {}
-variable "oidc_token_file" {}
+#variable "oidc_token_file" {}
 variable "use_oidc" {}
 
 provider "azurerm" {
