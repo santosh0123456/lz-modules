@@ -37,7 +37,8 @@ data "azurerm_resource_group" "rg" {
   name = var.resource_group_name
 }
 data "http" "image_registry" {
-  url = "https://raw.githubusercontent.com/santosh0123456/image-registry/main/images.json"
+  #url = "https://raw.githubusercontent.com/santosh0123456/image-registry/main/images.json"
+  url = "https://api.github.com/repos/santosh0123456/image-registry/contents/images.json"
 
   request_headers = {
     Authorization = "Bearer ${var.github_token}"
