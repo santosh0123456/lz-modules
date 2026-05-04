@@ -35,15 +35,6 @@ provider "azurerm" {
   # oidc_token_file = var.oidc_token_file
 #
 }
-output "env_debug" {
-  value = {
-    client_id = env("ARM_CLIENT_ID")
-    tenant_id = env("ARM_TENANT_ID")
-    sub_id    = env("ARM_SUBSCRIPTION_ID")
-    oidc      = env("ARM_USE_OIDC")
-    token     = env("ARM_OIDC_TOKEN_FILE")
-  }
-}
 
 # ----------------------------
 # Resource Group (reuse existing)
