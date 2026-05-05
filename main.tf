@@ -15,8 +15,29 @@ terraform {
     use_cli = false
   }
 }
-variable "github_token" {}
+# variable "github_token" {}
 
+# Defining Vault Provider
+provider "vault" {
+  address = "http://vault.tfeplatform.svc.cluster.local:8200"
+  auth_login {
+    path = "auth/kubernetes/login"
+    parameters = {
+      role = "tfe-role"
+      jwt  = file("/var/run/secrets/kubernetes.io/serviceaccount/token")
+    }
+  }
+}
+# Fetching Github Token from Vaulr
+data "vault_kv_secret_v2" "github" {
+  mount = "secret"
+  name  = "github"
+}
+locals {
+  github_token = data.vault_kv_secret_v2.github.data.token
+}
+
+# Defining azurerm Provide
 provider "azurerm" {
   features {}
   use_oidc = true
@@ -32,9 +53,10 @@ data "azurerm_resource_group" "rg" {
 data "http" "image_registry" {
   #url = "https://raw.githubusercontent.com/santosh0123456/image-registry/main/images.json"
   url = "https://api.github.com/repos/santosh0123456/image-registry/contents/images.json"
-
+ 
+  # Calling Github Token
   request_headers = {
-    Authorization = "Bearer ${var.github_token}"
+    Authorization = "Bearer ${local.github_token}"
     Accept        = "application/vnd.github.v3.raw"
   }
 }
