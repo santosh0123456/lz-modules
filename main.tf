@@ -4,7 +4,7 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.7"   # must be 3.7+ for OIDC
     }
-  }
+  } 
   backend "azurerm" {
     resource_group_name  = "crestsolution"
     storage_account_name = "crestsolution"
