@@ -18,8 +18,8 @@ terraform {
 variable "github_token" {}
 provider "azurerm" {
   features {}
-  #use_oidc = true
-  #use_cli  = false         # ← REQUIRED
+  use_oidc = true
+  use_cli  = false         # ← REQUIRED
 }
 
 # ----------------------------
