@@ -39,10 +39,9 @@ data "http" "image_registry" {
   }
 }
 locals {
-  # images = jsondecode(data.http.image_registry.response_body)
-  image_response = jsondecode(data.http.image_registry.response_body)
-  images         = jsondecode(base64decode(local.image_response.content))
-
+  images = jsondecode(data.http.image_registry.response_body)
+  #image_response = jsondecode(data.http.image_registry.response_body)
+  #images         = jsondecode(base64decode(local.image_response.content))
 }
 
 # ----------------------------
@@ -269,4 +268,7 @@ resource "azurerm_linux_virtual_machine" "vm-mariadb" {
   }
 
   disable_password_authentication = true
+}
+output "debug_raw_response" {
+  value = data.http.image_registry.response_body
 }
