@@ -5,8 +5,6 @@ terraform {
       version = "~> 3.7"   # must be 3.7+ for OIDC
     }
   }
-#} 
-#terraform {
   backend "azurerm" {
     resource_group_name  = "crestsolution"
     storage_account_name = "crestsolution"
@@ -18,22 +16,10 @@ terraform {
   }
 }
 variable "github_token" {}
-#variable "client_id" {}
-#variable "tenant_id" {}
-#variable "subscription_id" {}
-#variable "oidc_token_file" {}
-#variable "use_oidc" {}
-
 provider "azurerm" {
   features {}
   use_oidc = true
   use_cli  = false         # ← REQUIRED
-
-  #client_id       = var.client_id       # "19baf6b7-69ab-443e-ad52-77ee501d2ac0"
-  #tenant_id       = var.tenant_id       # "c267b313-f395-45c7-82f9-325e4d530d90"
-  #subscription_id = var.subscription_id # "71dc99cb-2548-4b6b-bf46-cd57e81fccaa"
-  # oidc_token_file = var.oidc_token_file
-#
 }
 
 # ----------------------------
