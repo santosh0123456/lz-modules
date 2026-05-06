@@ -116,6 +116,17 @@ resource "azurerm_network_security_group" "nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+  security_rule {
+    name                       = "allow-mysql"
+    priority                   = 1002
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "3306"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
 }
 
 # ----------------------------
@@ -291,6 +302,52 @@ resource "azurerm_linux_virtual_machine" "vm-mariadb" {
 
   disable_password_authentication = true
 }
-output "debug_raw_response" {
-  value = data.http.image_registry.response_body
+resource "azurerm_mssql_server" "sql" {
+  name                         = "NAME_TO_ADD"
+  resource_group_name          = var.resource_group_name
+  location                     = data.azurerm_resource_group.rg.location
+  version                      = "12.0"
+  administrator_login          = var.admin_username
+  administrator_login_password = var.sql_password
+
+  public_network_access_enabled = true
+}
+
+
+resource "azurerm_mssql_database" "db" {
+  name      = "NAME_TO_ADD"
+  server_id = azurerm_mssql_server.sql.id
+  sku_name  = "Basic"
+}
+
+resource "null_resource" "ansible_configure" {
+  depends_on = [
+    azurerm_linux_virtual_machine.vm-nginx,
+    azurerm_linux_virtual_machine.vm-tomcat,
+    azurerm_linux_virtual_machine.vm-mariadb
+  ]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      rm -rf /tmp/ansible
+      git clone https://x-access-token:${var.github_token}@github.com/santosh0123456/ansible.git /tmp/ansible
+      cd /tmp/ansible
+
+      cat > inventory.ini <<EOF
+[nginx]
+${azurerm_public_ip.nginx.ip_address} ansible_user=${var.admin_username} ansible_ssh_private_key_file=/root/.ssh/id_rsa
+
+[tomcat]
+${azurerm_public_ip.tomcat.ip_address} ansible_user=${var.admin_username} ansible_ssh_private_key_file=/root/.ssh/id_rsa
+
+[mariadb]
+${azurerm_public_ip.mariadb.ip_address} ansible_user=${var.admin_username} ansible_ssh_private_key_file=/root/.ssh/id_rsa
+EOF
+
+      echo "Waiting for VMs to be SSH-ready..."
+      sleep 30
+
+      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini site.yml
+    EOT
+  }
 }
