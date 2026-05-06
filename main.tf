@@ -15,7 +15,7 @@ terraform {
     use_cli = false
   }
 }
-# variable "github_token" {} 
+# variable "github_token" {}  
 
 # Defining Vault Provider
 provider "vault" {
