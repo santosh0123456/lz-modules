@@ -41,6 +41,18 @@ data "vault_kv_secret_v2" "github" {
 locals {
   github_token = data.vault_kv_secret_v2.github.data.token
 }
+# ------------------------------------------------
+# Fetch MariaDB Admin Users Credentials from Vault
+# ------------------------------------------------
+data "vault_kv_secret_v2" "mariadb-admin" {
+  mount = "secret"
+  name  = "mariadb-admin"
+}
+
+locals {
+  mariadb_admin_user = data.vault_kv_secret_v2.mariadb_admin.data["username"]
+  mariadb_admin_pass = data.vault_kv_secret_v2.mariadb_admin.data["password"]
+}
 
 # ----------------------------
 # Azure Provider
