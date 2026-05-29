@@ -42,7 +42,7 @@ locals {
   github_token = data.vault_kv_secret_v2.github.data.token
 }
 # ------------------------------------------------
-# Fetch MariaDB Admin Users Credentials from Vault
+# Fetch MariaDB Admin User Credentials from Vault
 # ------------------------------------------------
 data "vault_kv_secret_v2" "mariadb-admin" {
   mount = "secret"
