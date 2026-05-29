@@ -50,8 +50,8 @@ data "vault_kv_secret_v2" "mariadb-admin" {
 }
 
 locals {
-  mariadb_admin_user = data.vault_kv_secret_v2.mariadb_admin.data["username"]
-  mariadb_admin_pass = data.vault_kv_secret_v2.mariadb_admin.data["password"]
+  mariadb_admin_user = data.vault_kv_secret_v2.mariadb-admin.data["username"]
+  mariadb_admin_pass = data.vault_kv_secret_v2.mariadb-admin.data["password"]
 }
 
 # ----------------------------
