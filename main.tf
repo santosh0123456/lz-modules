@@ -54,6 +54,18 @@ locals {
   mariadb_admin_pass = data.vault_kv_secret_v2.mariadb-admin.data["password"]
 }
 
+# ------------------------------------------------
+# Fetch Keycloak Admin User Credentials from Vault
+# ------------------------------------------------
+data "vault_kv_secret_v2" "keycloak-admin" {
+  mount = "secret"
+  name  = "keycloak-admin"
+}
+
+locals {
+  keycloak_admin_user = data.vault_kv_secret_v2.keycloak-admin.data["username"]
+  keycloak_admin_pass = data.vault_kv_secret_v2.keycloak-admin.data["password"]
+}
 # ----------------------------
 # Azure Provider
 # ----------------------------
