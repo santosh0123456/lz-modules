@@ -55,7 +55,7 @@ locals {
 }
 
 # ------------------------------------------------
-# Fetch Keycloak Admin User Credentials from Vault
+# Fetch Keycloak Admin Users Credentials from Vault
 # ------------------------------------------------
 data "vault_kv_secret_v2" "keycloak-admin" {
   mount = "secret"
