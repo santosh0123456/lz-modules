@@ -315,7 +315,7 @@ resource "azurerm_linux_virtual_machine" "vm-mariadb" {
 resource "null_resource" "ansible_configure" {
   depends_on = [
     azurerm_linux_virtual_machine.vm-nginx,
-    azurerm_linux_virtual_machine.vm-tomcat,
+    azurerm_linux_virtual_machine.vm-keycloak,
     azurerm_linux_virtual_machine.vm-mariadb
   ]
 
@@ -329,8 +329,8 @@ resource "null_resource" "ansible_configure" {
 [nginx]
 ${azurerm_public_ip.nginx.ip_address} ansible_user=${var.admin_username} ansible_ssh_private_key_file=/root/.ssh/id_rsa
 
-[tomcat]
-${azurerm_public_ip.tomcat.ip_address} ansible_user=${var.admin_username} ansible_ssh_private_key_file=/root/.ssh/id_rsa
+[keycloak]
+${azurerm_public_ip.keycloak.ip_address} ansible_user=${var.admin_username} ansible_ssh_private_key_file=/root/.ssh/id_rsa
 
 [mariadb]
 ${azurerm_public_ip.mariadb.ip_address} ansible_user=${var.admin_username} ansible_ssh_private_key_file=/root/.ssh/id_rsa
