@@ -17,7 +17,7 @@ terraform {
 }
 # added again the plan to run again
 # ----------------------------
-# Vault Provider 
+# Vault Provider    
 # ----------------------------
 provider "vault" {
   address = "http://vault.tfeplatform.svc.cluster.local:8200"
