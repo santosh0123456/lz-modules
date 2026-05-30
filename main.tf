@@ -363,7 +363,11 @@ EOF
       echo "Waiting for VMs to be SSH-ready..."
       sleep 30
 
-      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini site.yml
+      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini site.yml \
+      -e mariadb_admin_user="${local.mariadb_admin_user}" \
+      -e mariadb_admin_pass="${local.mariadb_admin_pass}" \
+      -e keycloak_admin_user="${local.keycloak_admin_user}" \
+      -e keycloak_admin_pass="${local.keycloak_admin_pass}"
     EOT
   }
 }
